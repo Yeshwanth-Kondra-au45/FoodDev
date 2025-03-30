@@ -14,10 +14,21 @@ const Add = () => {
             [e.target.name]: e.target.value
         })
     }
+
+    const onSubmitHandler = async (e) => {  
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append('image', image)
+        formData.append('name', data.name)
+        formData.append('description', data.description)
+        formData.append('category', data.category)
+        formData.append('price', Number(data.price))
+        console.log(data)
+    }
     
     return (
         <div className="add">
-            <form className="flex-col">
+            <form className="flex-col" onSubmit={onSubmitHandler}>
                 <div className="add-img-upload flex-col">
                     <p>Upload Image</p>
                     <label htmlFor="image">
