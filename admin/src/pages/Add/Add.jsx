@@ -1,78 +1,123 @@
-import React, {  useState } from 'react'
-import './Add.css'
-const Add = () => {
-    const [image, setImage] = useState(false)
-    const [data, setData] = useState({
-        name: '',
-        description: '',
-        category: 'Salad',
-        price: '',
-    })
-    const onChangeHandler = (e) => {
-        setData({
-            ...data,
-            [e.target.name]: e.target.value
-        })
-    }
+import React, { useState } from "react";
+import "./Add.css";
+import axios from "axios";
+import { toast } from "react-toastify";
+const Add = ({ url }) => {
+  const [image, setImage] = useState(false);
+  const [data, setData] = useState({
+    name: "",
+    description: "",
+    category: "Salad",
+    price: "",
+  });
+  const onChangeHandler = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-    const onSubmitHandler = async (e) => {  
-        e.preventDefault()
-        const formData = new FormData()
-        formData.append('image', image)
-        formData.append('name', data.name)
-        formData.append('description', data.description)
-        formData.append('category', data.category)
-        formData.append('price', Number(data.price))
-        console.log(data)
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("price", Number(data.price));
+    const response = await axios.post(`${url}/api/food/add`, formData);
+    if (response.data.success) {
+      setData({
+        name: "",
+        description: "",
+        category: "Salad",
+        price: "",
+      });
+      setImage(false);
+      toast.success(response.data.message);
+    } else {
+      toast.error(response.data.message);
     }
-    
-    return (
-        <div className="add">
-            <form className="flex-col" onSubmit={onSubmitHandler}>
-                <div className="add-img-upload flex-col">
-                    <p>Upload Image</p>
-                    <label htmlFor="image">
-                        {image ? (
-                            <img src={URL.createObjectURL(image)} alt="Preview" className='image-preview'/>
-                        ) : (
-                            <ion-icon name="cloud-upload-outline"></ion-icon>
-                        )}
-                    </label>
-                    <input onChange={(e) => setImage(e.target.files[0])} type="file" id="image" hidden required />
-                </div>
-                <div className="add-product-name flex-col">
-                    <p>Product Name</p>
-                    <input onChange={onChangeHandler} value={data.name} type="text" name='name' placeholder='Type here' />
-                </div>
-                <div className="add-product-description flex-col">
-                    <p>Product Description</p>
-                    <textarea onChange={onChangeHandler} value={data.description} name='description' rows={6} placeholder='Write content here' required />
+    // console.log(data);
+  };
 
-                </div>
-                <div className="add-category-price ">
-                    <div className="add-category flex-col">
-                        <p>Product Category</p>
-                        <select name="category" onChange={onChangeHandler} >
-                            <option value="Salad">Salad</option>
-                            <option value="Rolls">Rolls</option>
-                            <option value="Deserts">Deserts</option>
-                            <option value="Sandwich">Sandwich</option>
-                            <option value="Cake">Cake</option>
-                            <option value="Pure veg">Pure veg</option>
-                            <option value="Pasta">Pasta</option>
-                            <option value="Noodles">Noodles</option>
-                        </select>
-                    </div>
-                    <div className="add-price flex-col">
-                        <p> Product Price</p>
-                        <input onChange={onChangeHandler} value={data.price} type="number" name='price' placeholder='$20' />
-                    </div>
-                </div>
-                
-                <button type='submit' className='add-btn'>Add Product</button>
-            </form>
+  return (
+    <div className="add">
+      <form className="flex-col" onSubmit={onSubmitHandler}>
+        <div className="add-img-upload flex-col">
+          <p>Upload Image</p>
+          <label htmlFor="image">
+            {image ? (
+              <img
+                src={URL.createObjectURL(image)}
+                alt="Preview"
+                className="image-preview"
+              />
+            ) : (
+              <ion-icon name="cloud-upload-outline"></ion-icon>
+            )}
+          </label>
+          <input
+            onChange={(e) => setImage(e.target.files[0])}
+            type="file"
+            id="image"
+            hidden
+            required
+          />
         </div>
-    )
-}
+        <div className="add-product-name flex-col">
+          <p>Product Name</p>
+          <input
+            onChange={onChangeHandler}
+            value={data.name}
+            type="text"
+            name="name"
+            placeholder="Type here"
+          />
+        </div>
+        <div className="add-product-description flex-col">
+          <p>Product Description</p>
+          <textarea
+            onChange={onChangeHandler}
+            value={data.description}
+            name="description"
+            rows={6}
+            placeholder="Write content here"
+            required
+          />
+        </div>
+        <div className="add-category-price ">
+          <div className="add-category flex-col">
+            <p>Product Category</p>
+            <select name="category" onChange={onChangeHandler}>
+              <option value="Salad">Salad</option>
+              <option value="Rolls">Rolls</option>
+              <option value="Deserts">Deserts</option>
+              <option value="Sandwich">Sandwich</option>
+              <option value="Cake">Cake</option>
+              <option value="Pure veg">Pure veg</option>
+              <option value="Pasta">Pasta</option>
+              <option value="Noodles">Noodles</option>
+            </select>
+          </div>
+          <div className="add-price flex-col">
+            <p> Product Price</p>
+            <input
+              onChange={onChangeHandler}
+              value={data.price}
+              type="number"
+              name="price"
+              placeholder="$20"
+            />
+          </div>
+        </div>
 
-export default Add
+        <button type="submit" className="add-btn">
+          Add Product
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default Add;

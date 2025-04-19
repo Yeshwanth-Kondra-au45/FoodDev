@@ -11,9 +11,3 @@ export const connectDB = async () => {
     process.exit(1);
   }
 };
-// mongoose.connect('mongodb://yeshwanthyadavkondra:7032081349@cluster0.dvzlads.mongodb.net/food-delivery?directConnection=true', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true
-// });
-
-// mongodb+srv://yeshwanthyadavkondra:7032081349@cluster0.dvzlads.mongodb.net/?
