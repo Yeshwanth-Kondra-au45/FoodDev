@@ -31,4 +31,3 @@ app.use("/api/users", userRouter);
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
-//mongodb+srv://yeshwanthyadavkondra:2731287346123418@cluster0.xmmdp.mongodb.net/?
