@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./LoginPopUp.css";
 import { assets } from "../../assets/assets";
+import { StoreContext } from "../../context/StoreContext.js";
+import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
 const LoginPopUp = ({ setShowLogin }) => {
+  const { url, setToken } = useContext(StoreContext);
   const [currState, setCurrState] = useState("Sign Up");
   const [data, setData] = useState({
     name: "",
@@ -16,9 +19,26 @@ const LoginPopUp = ({ setShowLogin }) => {
   useEffect(() => {
     console.log("Data changed:", data);
   }, [data]);
+  const onLogin = async (e) => {
+    e.preventDefault();
+    let newUrl = url;
+    if (currState === "Login") {
+      newUrl += "/api/users/login";
+    } else {
+      newUrl += "/api/users/register";
+    }
+    const response = await axios.post(newUrl, data);
+    if (response.data.success) {
+      setToken(response.data.token);
+      localStorage.setItem("token", response.data.token);
+      setShowLogin(false);
+    } else {
+      alert(response.data.message);
+    }
+  };
   return (
     <div className="login-popup">
-      <form className="login-popup-container">
+      <form onSubmit={onLogin} className="login-popup-container">
         <div className="login-popup-title">
           <h2>{currState}</h2>
           <img
@@ -56,7 +76,9 @@ const LoginPopUp = ({ setShowLogin }) => {
             required
           />
         </div>
-        <button>{currState === "Sign Up" ? "Create account" : "Login"}</button>
+        <button type="submit">
+          {currState === "Sign Up" ? "Create account" : "Login"}
+        </button>
         <div className="login-popup-condition">
           <input type="checkbox" required />
           <p>I accept all terms and conditions</p>
